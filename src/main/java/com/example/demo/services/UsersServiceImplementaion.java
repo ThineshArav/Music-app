@@ -59,4 +59,9 @@ public class UsersServiceImplementaion implements UsersService {
 		
 		return repo.findByEmail(email);
 	}
+
+	@Override
+	public void updateUser(Users user) {
+		 repo.save(user);
+	}
 }

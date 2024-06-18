@@ -12,7 +12,9 @@ public interface UsersService {
 	
 	public String getRole(String email);
 
-	public Users getUser(String email); 
+	public Users getUser(String email);
+
+	public void updateUser(Users user); 
 	
 	
 }

@@ -1,18 +1,29 @@
 package com.example.demo.controller;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.entities.Users;
+import com.example.demo.services.UsersService;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import com.razorpay.Utils;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class PaymentController {
+	
+	@Autowired
+	UsersService Service;
+	
+	
 	@PostMapping("/createOrder")
 	@ResponseBody
 		public String createorder() {
@@ -55,4 +66,21 @@ public class PaymentController {
 	    }
 	}
 	
+	//Payment success- update premium user
+	@GetMapping("Payment-success")
+	public String paymentSucces(HttpSession session) {
+		String email=(String) session.getAttribute("email");
+		Users user=Service.getUser(email);
+		user.setPremium(true);
+		Service.updateUser(user);
+		return "login";
+		
+	}
+	
+	//Payment failure -redirect to login 
+	@GetMapping("Paymet-failure")
+	public String paymentFailure() {
+		//Payment error page
+		return "login";
+	}
 }

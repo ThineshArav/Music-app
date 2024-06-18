@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entities.Users;
 import com.example.demo.services.UsersService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -33,11 +36,15 @@ public class UsersController {
 	}
 	
 	@PostMapping("/login")
-	public String validateUser(@RequestParam String email,@RequestParam String password)
+	public String validateUser(@RequestParam String email,@RequestParam String password,HttpSession session)
 	{
+		
+		//invoking validate user()in service
 		boolean loginstatus=userv.validateUser(email, password);
 		if(loginstatus==true)
 		{
+			session.setAttribute("email", email);
+			//checking wheather the user is admin or customer
 			//if(userv.getRole(email).equals("admin"))
 			String role=userv.getRole(email);
 			if (role.equals("admin"))
@@ -55,7 +62,8 @@ public class UsersController {
 		}
 	}
 	@GetMapping("/exploresongs")
-	public String exploresongs(String email) { 
+	public String exploresongs(HttpSession session) { 
+		String email =(String) session.getAttribute("email");
 		Users user=userv.getUser(email);
 		boolean userStatus=user.isPremium();
 		if(userStatus==true) {
